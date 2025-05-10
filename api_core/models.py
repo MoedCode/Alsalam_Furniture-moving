@@ -43,14 +43,37 @@ class Base(models.Model):
 
 class About(Base):
     """
-    About model with description, identity, and a logo image.
+    Represents the 'About' section of the website, with required logo and optional image.
     """
-    description = models.TextField()
-    whoweare = models.TextField()
-    name = models.CharField(max_length=255)  # Add max_length
-    logo = models.ImageField(upload_to='logos/')  # Store image in MEDIA_ROOT/logos/
-    image = models.ImageField(upload_to='images/about')
+    description = models.TextField(
+    help_text="General description about the company or service."
+    )
+    who_we_are = models.TextField(
+    help_text="Detailed description of who you are as a company."
+    )
+    name = models.CharField(
+    max_length=255,
+    help_text="Company or website name."
+    )
+    logo = models.ImageField(
+    upload_to='images/logos',
+    null=False,
+    blank=False,
+    help_text="Required company logo."
+    )
+    cover_images = models.ImageField(
+    upload_to='images/about',
+    null=True,
+    blank=True,
+    help_text="Optional additional image."
+    )
+class Meta:
+    verbose_name = "About"
+    verbose_name_plural = "About Section"
+    ordering = ["created"]
 
+def __str__(self):
+    return f"{self.name}"
 class Packages(Base):
     """
     Stores package offerings mirroring the lockers.sa structure:
