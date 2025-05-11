@@ -40,7 +40,7 @@ class SetAbout(APIView):
             return Response(serialized.data, S201)
         else:
             return Response(serialized.errors, S400)
-def SetAboutFrom(APIview):
+class SetAboutFrom(APIView):
     permission_classes = [IsAdminAndLogged]
     def get(self, request):
         return render(request, "set_about.html")
