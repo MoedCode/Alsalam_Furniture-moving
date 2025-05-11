@@ -138,4 +138,10 @@ import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEBUG = False    # for production
-ALLOWED_HOSTS = [...]  # as we talked about
+# ALLOWED_HOSTS = [...]  # as we talked about
+ALLOWED_HOSTS = [
+    '54.166.6.159',        # your server IP
+    'localhost',           # when you test locally
+    '127.0.0.1',           # ditto
+    '[::1]',               # IPv6 localhost
+]
