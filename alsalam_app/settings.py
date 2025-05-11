@@ -31,12 +31,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.admin',            # Admin interface
+    'django.contrib.auth',             # Authentication system
+    'django.contrib.contenttypes',     # Needed for content types framework
+    'django.contrib.sessions',         # Session framework
+    'django.contrib.messages',         # Messaging framework
+    'django.contrib.staticfiles',      # Static file management
+
+    # Third-party
+    'rest_framework',                  # Django REST framework
+
+    # Your app
+    'api_core',                        # Your custom app
 ]
 
 MIDDLEWARE = [
@@ -75,8 +81,13 @@ WSGI_APPLICATION = 'alsalam_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE':'django.db.backends.mysql',
+        'NAME':'Alsalam_db',
+        'USER':'salam_admin',
+        'PASSWORD':'peace_25_pwd',
+        'HOST':'localhost',
+        'PORT':'3306'
+
     }
 }
 
@@ -121,3 +132,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+import os
+
+# Media files (uploaded content like images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

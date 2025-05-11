@@ -61,11 +61,8 @@ class About(Base):
     blank=False,
     help_text="Required company logo."
     )
-    cover_images = models.ImageField(
-    upload_to='images/about',
-    null=True,
-    blank=True,
-    help_text="Optional additional image."
+    cover_images = models.JSONField(
+    default=list,blank=True,help_text="list of cover images URLs"
     )
 class Meta:
     verbose_name = "About"

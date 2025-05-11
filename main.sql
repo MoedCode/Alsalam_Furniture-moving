@@ -1,0 +1,4 @@
+CREATE DATABASE Alsalam_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'salam_admin'@'LOCALHOST' IDENTIFIED BY 'peace_25_pwd';
+GRANT ALL PRIVILEGES ON Alsalam_db. * TO 'salam_admin'@'LOCALHOST';
+FLUSH PRIVILEGES;
