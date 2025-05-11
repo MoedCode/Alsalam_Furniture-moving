@@ -137,3 +137,5 @@ import os
 # Media files (uploaded content like images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEBUG = False    # for production
+ALLOWED_HOSTS = [...]  # as we talked about

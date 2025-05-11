@@ -1,0 +1,26 @@
+.git/
+# Ignore VSCode settings
+.vscode/
+
+# Ignore Python bytecode
+__pycache__/
+
+# Ignore media files
+media/
+
+# Ignore images folder (if it contains user-uploaded content)
+images*/
+
+# Ignore virtual environment folders (if they exist)
+env/
+venv/
+
+# Ignore Django migrations (optional, but recommended)
+*/migrations/
+
+# Ignore .env files (if you use environment variables for secrets)
+*.env
+
+# Ignore other system-specific files
+.DS_Store
+Thumbs.db
