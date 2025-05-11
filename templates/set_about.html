@@ -1,0 +1,94 @@
+<!-- templates/set_about.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Set About Info</title>
+  <link rel="stylesheet" href="{% static 'css/about.css' %}">
+</head>
+<body>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        }
+
+        input, textarea {
+        width: 100%;
+        margin-bottom: 10px;
+        }
+
+        button {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        }
+
+        #result {
+        margin-top: 20px;
+        font-weight: bold;
+        }
+
+    </style>
+  <h2>Update About Section</h2>
+
+  <form id="aboutForm" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label>Name:</label><br>
+    <input type="text" name="name" required><br>
+
+    <label>Description:</label><br>
+    <textarea name="description" required></textarea><br>
+
+    <label>Who We Are:</label><br>
+    <textarea name="who_we_are" required></textarea><br>
+
+    <label>Logo (required):</label><br>
+    <input type="file" name="logo" accept="image/*" required><br>
+
+    <label>Optional Image:</label><br>
+    <input type="file" name="image" accept="image/*"><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="result"></div>
+
+  <!-- <script src="{% static 'js/about.js' %}"></script> -->
+   <script>
+        document.getElementById('aboutForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        try {
+            const response = await fetch('/api/about/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+            document.getElementById('result').innerText = "Success: About updated.";
+            } else {
+            document.getElementById('result').innerText = "Error: " + JSON.stringify(result);
+            }
+        } catch (err) {
+            document.getElementById('result').innerText = "Network error: " + err.message;
+        }
+        });
+
+   </script>
+</body>
+</html>
