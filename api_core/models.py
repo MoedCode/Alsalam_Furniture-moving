@@ -43,34 +43,60 @@ class Base(models.Model):
 
 class About(Base):
     """
-    Represents the 'About' section of the website, with required logo and optional image.
+    Represents the 'About' section of the website, with required logo.
     """
     description = models.TextField(
-    help_text="General description about the company or service."
+        help_text="General description about the company or service."
     )
     who_we_are = models.TextField(
-    help_text="Detailed description of who you are as a company."
+        help_text="Detailed description of who you are as a company."
     )
     name = models.CharField(
-    max_length=255,
-    help_text="Company or website name."
+        max_length=255,
+        help_text="Company or website name."
     )
     logo = models.ImageField(
-    upload_to='images/logos',
-    null=False,
-    blank=False,
-    help_text="Required company logo."
+        upload_to='images/logos',
+        blank=False,
+        help_text="Required company logo."
     )
-    cover_images = models.JSONField(
-    default=list,blank=True,help_text="list of cover images URLs"
-    )
-class Meta:
-    verbose_name = "About"
-    verbose_name_plural = "About Section"
-    ordering = ["created"]
 
-def __str__(self):
-    return f"{self.name}"
+    def __str__(self):
+        return self.name
+
+    class Meta:                       # ← indented under About
+        verbose_name = "About"
+        verbose_name_plural = "About Section"
+
+
+
+class AboutCoverImage(Base):
+    """
+    Stores multiple cover images (with optional caption) for the About section.
+    """
+    about = models.ForeignKey(
+        'About',
+        on_delete=models.CASCADE,
+        related_name='cover_images',
+        help_text="The About section this image is linked to."
+    )
+    image = models.ImageField(
+        upload_to='images/about/covers',
+        help_text="Promotional cover image."
+    )
+    caption = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Optional text shown below the image."
+    )
+
+    def __str__(self):
+        return f"Cover image for {self.about.name}"
+
+    class Meta:                       # ← indented under CoverImage
+        verbose_name = "about Cover Image"
+        verbose_name_plural = "Cover Images"
+
 class Packages(Base):
     """
     Stores package offerings mirroring the lockers.sa structure:

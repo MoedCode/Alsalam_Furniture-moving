@@ -1,19 +1,22 @@
 from django.contrib import admin
 from api_core.models import *
 # Register your models here.
-admin.site.register(About)
-admin.site.register(Packages)
-'''
+# admin.site.register(About)
+# admin.site.register(Packages)
+class AboutCoverImageInline(admin.TabularInline):
+    model = AboutCoverImage
+    extra = 1
+    fields = ("image", "caption")
+    verbose_name = "Cover Image"
+    verbose_name_plural = "Cover Images"
+
 @admin.register(About)
 class AboutAdmin(admin.ModelAdmin):
-    # Show every concrete field in the changelist
-    list_display = [f.name for f in About._meta.concrete_fields]
-    # Allow filtering/searching if you like:
-    search_fields = ['name', 'description', 'who_we_are']
+    list_display = ("name", "created_at", "updated_at")
+    fields = ("name", "description", "who_we_are", "logo")
+    inlines = [AboutCoverImageInline]
 
-@admin.register(Packages)
-class PackagesAdmin(admin.ModelAdmin):
-    list_display = [f.name for f in Packages._meta.concrete_fields]
-    list_filter = ['disassembly_and_assembly', 'packing_the_belongings']
-    search_fields = ['name']
-    '''
+@admin.register(AboutCoverImage)
+class AboutCoverImageAdmin(admin.ModelAdmin):
+    list_display = ("about", "image", "caption")
+    list_filter  = ("about",)
