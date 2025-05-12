@@ -20,3 +20,8 @@ class AboutAdmin(admin.ModelAdmin):
 class AboutCoverImageAdmin(admin.ModelAdmin):
     list_display = ("about", "image", "caption")
     list_filter  = ("about",)
+@admin.register(Packages)
+class PackagesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price')
+    list_filter = ('disassembly_and_assembly', 'furniture_wrapping', 'packing_the_belongings')
+    search_fields = ('mnames', )
