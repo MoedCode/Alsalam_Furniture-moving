@@ -38,15 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',         # Session framework
     'django.contrib.messages',         # Messaging framework
     'django.contrib.staticfiles',      # Static file management
-
     # Third-party
     'rest_framework',                  # Django REST framework
-
+     'corsheaders',
     # Your app
     'api_core',                        # Your custom app
 ]
 
 MIDDLEWARE = [
+    #added
+    'corsheaders.middleware.CorsMiddleware',
+    #...
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -137,7 +139,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Media files (uploaded content like images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-DEBUG = False    # for production
+   # for production
 # ALLOWED_HOSTS = [...]  # as we talked about
 ALLOWED_HOSTS = [
     '54.166.6.159',        # your server IP
@@ -145,3 +147,4 @@ ALLOWED_HOSTS = [
     '127.0.0.1',           # ditto
     '[::1]',               # IPv6 localhost
 ]
+CORS_ALLOW_ALL_ORIGINS = True

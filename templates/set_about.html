@@ -70,7 +70,7 @@
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         try {
-            const response = await fetch('http://54.166.6.159/about/', {
+            const response = await fetch('http://127.0.0.1:8000/about', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken
