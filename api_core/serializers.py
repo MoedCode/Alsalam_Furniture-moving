@@ -10,9 +10,13 @@ class AboutSerializer(serializers.ModelSerializer):
             "name",
             "logo",  # ← Ensure logo is included
         ]
+class AboutCoverImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutCoverImage
+        fields = ['id', 'image', 'caption']
 class PackagesSerializer(serializers.ModelSerializer):
     class Meta:
-        models=Packages
+        model=Packages
         fields = [
             'name', 'price', 'disassembly_and_assembly',
             'furniture_wrapping', 'packing_the_belongings',

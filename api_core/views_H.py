@@ -5,6 +5,9 @@ from rest_framework import status as S, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from django.http import FileResponse, Http404
+
+from drf_spectacular.utils import extend_schema_view, extend_schema
 logger = logging.getLogger(__name__)
 from .models import *
 from .serializers import *

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',                  # Django REST framework
      'corsheaders',
+     'drf_spectacular',
     # Your app
     'api_core',                        # Your custom app
 ]
@@ -146,3 +147,16 @@ ALLOWED_HOSTS = ['*']
 #     "http://197.48.253.79:5595"
 # ]
 CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'alsalam_app API',
+    'DESCRIPTION': 'Alsalam Furniture moving',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}

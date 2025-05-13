@@ -1,0 +1,252 @@
+openapi: 3.0.3
+info:
+  title: alsalam_app API
+  version: 1.0.0
+  description: Alsalam Furniture moving
+paths:
+  /about/:
+    get:
+      operationId: about_retrieve
+      description: |-
+        GET:    Retrieve About + logo URL + list of cover image URLs and captions.
+        POST:   Create (or partial-update) About with logo + any number of cover images.
+        PUT:    Full update of About + logo + cover images (old files cleaned up by model.save()).
+        DELETE: Remove About + all cover images (files cleaned up by model.delete()).
+      tags:
+      - about
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    post:
+      operationId: about_create
+      description: |-
+        Creates or updates the single About instance.
+        If an About exists, it performs a partial update; otherwise, it creates a new one.
+      tags:
+      - about
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    put:
+      operationId: about_update
+      description: |-
+        GET:    Retrieve About + logo URL + list of cover image URLs and captions.
+        POST:   Create (or partial-update) About with logo + any number of cover images.
+        PUT:    Full update of About + logo + cover images (old files cleaned up by model.save()).
+        DELETE: Remove About + all cover images (files cleaned up by model.delete()).
+      tags:
+      - about
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    delete:
+      operationId: about_destroy
+      description: |-
+        GET:    Retrieve About + logo URL + list of cover image URLs and captions.
+        POST:   Create (or partial-update) About with logo + any number of cover images.
+        PUT:    Full update of About + logo + cover images (old files cleaned up by model.save()).
+        DELETE: Remove About + all cover images (files cleaned up by model.delete()).
+      tags:
+      - about
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /about/cover-image/:
+    post:
+      operationId: about_cover_image_create
+      description: |-
+        Public endpoint to serve About cover images directly by ID or filename.
+        Expects image_id or filename in request.data (POST).
+      tags:
+      - about
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+  /packages/:
+    get:
+      operationId: packages_retrieve
+      tags:
+      - packages
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    post:
+      operationId: packages_create
+      tags:
+      - packages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    put:
+      operationId: packages_update
+      tags:
+      - packages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    delete:
+      operationId: packages_destroy
+      tags:
+      - packages
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Packages:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Package name
+          maxLength: 50
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+          description: Amount of The Trip
+        disassembly_and_assembly:
+          type: boolean
+          description: Disassembly and Assembly included
+        furniture_wrapping:
+          type: boolean
+          description: Unlimited Cardboards (Boxes) included
+        packing_the_belongings:
+          type: boolean
+          description: Packing the Belongings included
+        wrapping_before_packing:
+          type: boolean
+          description: Wrapping before Packing included
+        unpacking_and_organizing:
+          type: boolean
+          description: Unpacking and organizing in your new house included
+      required:
+      - name
+      - price
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
