@@ -15,7 +15,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Quick-start development settings - unsuitable for production
@@ -140,12 +140,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Media files (uploaded content like images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-   # for production
-# ALLOWED_HOSTS = [...]  # as we talked about
-ALLOWED_HOSTS = [
-    '54.166.6.159',        # your server IP
-    'localhost',           # when you test locally
-    '127.0.0.1',           # ditto
-    '[::1]',               # IPv6 localhost
-]
+ALLOWED_HOSTS = ['*']
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://wecareroot.ddns.net:5595",
+#     "http://197.48.253.79:5595"
+# ]
 CORS_ALLOW_ALL_ORIGINS = True

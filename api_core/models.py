@@ -1,3 +1,4 @@
+import os
 from  uuid import uuid4
 from django.db import models
 from django.utils import timezone
@@ -68,7 +69,20 @@ class About(Base):
         verbose_name = "About"
         verbose_name_plural = "About Section"
 
+    def save(self, *args, **kwargs):
+        try:
+            old = About.objects.get(id=self.id)
+            if old.logo and old.logo != self.logo:
+                if os.path.isfile(old.logo.path):
+                    os.remove(old.logo.path)
+        except About.DoesNotExist:
+            pass  # New object, no old image to remove
+        super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        if self.logo and os.path.isfile(self.logo.path):
+            os.remove(self.logo.path)
+        super().delete(*args, **kwargs)
 
 class AboutCoverImage(Base):
     """
@@ -96,7 +110,20 @@ class AboutCoverImage(Base):
     class Meta:                       # ← indented under CoverImage
         verbose_name = "about Cover Image"
         verbose_name_plural = "Cover Images"
+    def save(self, *args, **kwargs):
+        try:
+            old = AboutCoverImage.objects.get(id=self.id)
+            if old.image and old.image != self.image:
+                if os.path.isfile(old.image.path):
+                    os.remove(old.image.path)
+        except AboutCoverImage.DoesNotExist:
+            pass
+        super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 class Packages(Base):
     """
     Stores package offerings mirroring the lockers.sa structure:

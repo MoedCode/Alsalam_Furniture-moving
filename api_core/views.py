@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .views_main import *
+from api_core.views_H import *
 
 
 class IsAdminAndLogged(permissions.BasePermission):
@@ -12,6 +12,8 @@ class IsAdminAndLogged(permissions.BasePermission):
             request.user and request.user.is_authenticated and
             request.user.is_staff
             )
+
+                # About Endpoints
 class AboutView(APIView):
     """
     API endpoint to create or retrieve About section data.
@@ -23,6 +25,7 @@ class AboutView(APIView):
             return Response({"detail":"About Not Created yet"},S404)
         serialized = AboutSerializer(about).data
         return  Response(serialized, S200)
+            # check if jusr admin who can update delete about images
     permission_classes = [IsAdminAndLogged]
     def post(self, request):
         """
@@ -40,6 +43,34 @@ class AboutView(APIView):
             return Response(serialized.data, S201)
         else:
             return Response(serialized.errors, S400)
+    def put(self, request):
+        """
+        Updates the About section data (full update).
+        Only accessible by admin users.
+        """
+        about = About.objects.filter()
+        if not about:
+            return Response({"detail": "About section does not exist."},S404)
+
+        if 'logo' in request.data:
+            if about.logo:
+                try:
+                    prev_path = about.logo.path
+                    if os.path.exist(prev_path):
+                        default_storage.delete(prev_path)
+                except Exception as e:
+                        logger.error(f"Failed to delete old logo image: {str(e)}", exc_info=True)
+                serialized_about = AboutSerializer(about, data=request.data, partial=True)
+                if serialized_about.is_valid():
+                    serialized_about.save()
+                    return Response(serialized_about.data, S200)
+                else:
+                    return Response(serialized_about.errors, S400)
+
+
+
+
+
 class AboutFrom(APIView):
     permission_classes = [IsAdminAndLogged]
     def get(self, request):
@@ -59,7 +90,7 @@ class PackagesView(APIView):
         serialized_package.save()
         return Response(serialized_package.data, S201)
     def put(self, request):
-        Package_id = request.query_parameter.get("id")
+        Package_id = request.query_params.get('id')
         if not Package_id:
             return Response({"details":"package"}, S404)
         try:
@@ -72,7 +103,7 @@ class PackagesView(APIView):
         serialized_package.save()
         return Response(serialized_package.data, S200)
     def delete(self, request):
-        Package_id = request.query_parameter.get("id")
+        Package_id = request.query_params.get('id')
         if not Package_id:
             return Response({"details":"package"}, S404)
         try:

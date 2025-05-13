@@ -5,21 +5,24 @@ from api_core.models import *
 # admin.site.register(Packages)
 class AboutCoverImageInline(admin.TabularInline):
     model = AboutCoverImage
-    extra = 1
-    fields = ("image", "caption")
-    verbose_name = "Cover Image"
-    verbose_name_plural = "Cover Images"
+    extra = 1  # Show 1 empty form by default
+    fields = ('image', 'caption')  # Display only relevant fields
 
 @admin.register(About)
 class AboutAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at", "updated_at")
-    fields = ("name", "description", "who_we_are", "logo")
     inlines = [AboutCoverImageInline]
 
-@admin.register(AboutCoverImage)
-class AboutCoverImageAdmin(admin.ModelAdmin):
-    list_display = ("about", "image", "caption")
-    list_filter  = ("about",)
+    def delete_model(self, request, obj):
+        for cover in obj.cover_images.all():
+            cover.delete()  # call delete to remove image
+        obj.delete()
+
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            for cover in obj.cover_images.all():
+                cover.delete()
+            obj.delete()
+
 @admin.register(Packages)
 class PackagesAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')

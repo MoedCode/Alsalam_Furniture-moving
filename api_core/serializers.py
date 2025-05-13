@@ -3,9 +3,12 @@ from api_core.models import *
 
 class AboutSerializer(serializers.ModelSerializer):
     class Meta:
-        models = About
+        model = About
         fields = [
-            "description,""who_we_are,""name,"
+            "description",
+            "who_we_are",
+            "name",
+            "logo",  # ← Ensure logo is included
         ]
 class PackagesSerializer(serializers.ModelSerializer):
     class Meta:
