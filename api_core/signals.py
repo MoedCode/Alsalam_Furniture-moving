@@ -6,6 +6,7 @@ from api_core.models import About, AboutCoverImage  # avoid wildcard imports
 
 logger = logging.getLogger(__name__)  # Use module-level logger
 
+
 def delete_file(file_field):
     try:
         if file_field and hasattr(file_field, 'path') and os.path.isfile(file_field.path):
@@ -14,6 +15,7 @@ def delete_file(file_field):
         logger.error(f"[Image Deletion Error] {str(e)}", exc_info=True)
 
 # --- About Logo ---
+
 
 @receiver(pre_save, sender=About)
 def delete_logo_on_update(sender, instance, **kwargs):
@@ -26,11 +28,13 @@ def delete_logo_on_update(sender, instance, **kwargs):
     if prev.logo and prev.logo != instance.logo:
         delete_file(prev.logo)
 
+
 @receiver(post_delete, sender=About)
 def delete_logo_on_delete(sender, instance, **kwargs):
     delete_file(instance.logo)
 
 # --- Cover Images ---
+
 
 @receiver(pre_save, sender=AboutCoverImage)
 def delete_cover_on_update(sender, instance, **kwargs):
@@ -42,6 +46,7 @@ def delete_cover_on_update(sender, instance, **kwargs):
         return
     if prev.image and prev.image != instance.image:
         delete_file(prev.image)
+
 
 @receiver(post_delete, sender=AboutCoverImage)
 def delete_cover_on_delete(sender, instance, **kwargs):

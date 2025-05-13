@@ -1,3 +1,5 @@
+from .serializers import *
+from .models import *
 import os
 import logging
 from django.core.files.storage import default_storage
@@ -9,8 +11,6 @@ from django.http import FileResponse, Http404
 
 from drf_spectacular.utils import extend_schema_view, extend_schema
 logger = logging.getLogger(__name__)
-from .models import *
-from .serializers import *
 S200 = S.HTTP_200_OK
 S201 = S.HTTP_201_CREATED
 S304 = S.HTTP_304_NOT_MODIFIED

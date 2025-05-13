@@ -7,13 +7,16 @@ class IsAdminAndLogged(permissions.BasePermission):
     """
     Allows access only to authenticated admin (staff) users.
     """
+
     def loggedAndPermission(self, request, view):
         return bool(
             request.user and request.user.is_authenticated and
             request.user.is_staff
-            )
+        )
 
-                # About Endpoints
+        # About Endpoints
+
+
 class AboutView(APIView):
     """
     GET:    Retrieve About + logo URL + list of cover image URLs and captions.
@@ -25,17 +28,18 @@ class AboutView(APIView):
     def get(self, request):
         about = About.objects.first()
         if not about:
-            return Response({"detail":"About Not Created yet"},S404)
+            return Response({"detail": "About Not Created yet"}, S404)
         about_data = AboutSerializer(about).data
         # git all about cover images
         covers = AboutCoverImage.objects.filter(about=about)
-        #serialize them all result list of dictionaries
+        # serialize them all result list of dictionaries
         about_data['cover_images'] = AboutCoverImageSerializer(
             covers, many=True).data
-        return  Response(about_data, S200)
+        return Response(about_data, S200)
 
     # check if jusr admin who can update delete about images
     permission_classes = [IsAdminAndLogged]
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def post(self, request):
         """
@@ -44,7 +48,8 @@ class AboutView(APIView):
         """
         about = about.objects.first()
         if about:
-            serialized = AboutSerializer(about, data=request.data, partial=True)
+            serialized = AboutSerializer(
+                about, data=request.data, partial=True)
         else:
             serialized = AboutSerializer(data=request.data)
         if not serialized.is_valid():
@@ -56,11 +61,13 @@ class AboutView(APIView):
             files = request.FILES.getlist('cover_images')
             captions = request.data.getlist('captions', [])
             for idx, imag in enumerate(files):
-                cap = captions[idx] if  idx < len(captions) else ''
-                AboutCoverImage.objects.create(about=about, imag=imag, caption=cap)
+                cap = captions[idx] if idx < len(captions) else ''
+                AboutCoverImage.objects.create(
+                    about=about, imag=imag, caption=cap)
         except Exception as E:
-            return Response({"detail":f"error saving cover images {str(E)}"}, S500)
+            return Response({"detail": f"error saving cover images {str(E)}"}, S500)
         return Response(AboutSerializer(about).data, S201)
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def put(self, request):
         about = About.objects.first()
@@ -80,16 +87,19 @@ class AboutView(APIView):
                 cover = AboutCoverImage.objects.get(id=cover_id, about=about)
                 cover.delete()  # calls AboutCoverImage.delete()
             except AboutCoverImage.DoesNotExist:
-                logger.warning(f"Cover image ID {cover_id} not found or doesn't belong to this About.")
+                logger.warning(
+                    f"Cover image ID {cover_id} not found or doesn't belong to this About.")
 
         # add new cover images
         files = request.FILES.getlist('cover_images')
         captions = request.data.getlist('captions', [])
         for idx, img in enumerate(files):
             caption = captions[idx] if idx < len(captions) else ''
-            AboutCoverImage.objects.create(about=about, image=img, caption=caption)
+            AboutCoverImage.objects.create(
+                about=about, image=img, caption=caption)
 
         return Response(AboutSerializer(about).data, S.HTTP_200_OK)
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def delete(self, request):
         about = About.objects.first()
@@ -98,12 +108,14 @@ class AboutView(APIView):
         about.delete()  # triggers About.delete() and AboutCoverImage.delete() to clean up files
         return Response(status=S.HTTP_204_NO_CONTENT)
 
+
 class CoverImageServeView(APIView):
     """
     Public endpoint to serve About cover images directly by ID or filename.
     Expects image_id or filename in request.data (POST).
     """
     permission_classes = []  # Public access
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def post(self, request):
         try:
@@ -114,7 +126,8 @@ class CoverImageServeView(APIView):
                 cover = AboutCoverImage.objects.get(id=image_id)
                 file_path = cover.image.path
             elif filename:
-                file_path = os.path.join(settings.MEDIA_ROOT, 'images/about/covers', filename)
+                file_path = os.path.join(
+                    settings.MEDIA_ROOT, 'images/about/covers', filename)
             else:
                 return Response({"detail": "image_id or filename must be provided."}, status=400)
 
@@ -130,21 +143,37 @@ class CoverImageServeView(APIView):
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
 
+class AboutLogoView(APIView):
+    """
+    GET: Return the logo image file from the About section.
+    """
+    def get(self, request):
+        about = About.objects.first()
+        if not about or not about.logo:
+            raise Http404("Logo not found.")
+
+        return FileResponse(about.logo.open("rb"), content_type="image/*")
+
+
 @extend_schema_view(
     get=extend_schema(exclude=True)
 )
 class AboutFrom(APIView):
     permission_classes = [IsAdminAndLogged]
+
     def get(self, request):
         return render(request, "set_about.html")
+
+
 class PackagesView(APIView):
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def get(self, request):
         packages = Packages.objects.all()
         if not packages:
-            return Response({"detail":"About Packages Created yet"},S404)
+            return Response({"detail": "About Packages Created yet"}, S404)
         serialized_packages = PackagesSerializer(packages, many=True).data
         return Response({serialized_packages, S200})
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def post(self, request):
         serialized_package = PackagesSerializer(data=request.data)
@@ -152,29 +181,33 @@ class PackagesView(APIView):
             return Response(serialized_package.errors, S400)
         serialized_package.save()
         return Response(serialized_package.data, S201)
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def put(self, request):
         Package_id = request.query_params.get('id')
         if not Package_id:
-            return Response({"details":"package"}, S404)
+            return Response({"details": "package"}, S404)
         try:
             package = Packages.objects.get(Package_id)
         except Packages.DoesNotExist:
-            return Response({"detail":f"package {Package_id} not found"}, S404)
-        serialized_package = PackagesSerializer(package, data=request.data, partial=True)
+            return Response({"detail": f"package {Package_id} not found"}, S404)
+        serialized_package = PackagesSerializer(
+            package, data=request.data, partial=True)
         if not serialized_package.is_valid():
             return Response(serialized_package.errors, S400)
         serialized_package.save()
         return Response(serialized_package.data, S200)
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def delete(self, request):
         Package_id = request.query_params.get('id')
         if not Package_id:
-            return Response({"details":"package"}, S404)
+            return Response({"details": "package"}, S404)
         try:
             package = Packages.objects.get(Package_id)
         except Packages.DoesNotExist:
-            return Response({"detail":f"package {Package_id} not found"}, S404)
-        serialized_package = PackagesSerializer(package, data=request.data, partial=True)
+            return Response({"detail": f"package {Package_id} not found"}, S404)
+        serialized_package = PackagesSerializer(
+            package, data=request.data, partial=True)
         package.delete()
         return Response({"detail": f"Package {Package_id}deleted successfully"}, S200)

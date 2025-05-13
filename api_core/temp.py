@@ -11,10 +11,12 @@ from api_core.serializers import AboutSerializer, AboutCoverImageSerializer
 
 logger = logging.getLogger(__name__)
 
+
 class IsAdminAndLogged(permissions.BasePermission):
     """
     Allows access only to authenticated admin (staff) users.
     """
+
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and request.user.is_staff)
 
@@ -37,7 +39,8 @@ class AboutView(APIView):
         data = AboutSerializer(about).data
         # nest cover images
         covers = AboutCoverImage.objects.filter(about=about)
-        data['cover_images'] = AboutCoverImageSerializer(covers, many=True).data
+        data['cover_images'] = AboutCoverImageSerializer(
+            covers, many=True).data
         return Response(data, S.HTTP_200_OK)
 
     def post(self, request):
@@ -46,7 +49,8 @@ class AboutView(APIView):
         If an About exists, it performs a partial update; otherwise, it creates a new one.
         """
         about = About.objects.first()
-        serializer = AboutSerializer(about, data=request.data, partial=True) if about else AboutSerializer(data=request.data)
+        serializer = AboutSerializer(
+            about, data=request.data, partial=True) if about else AboutSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, S.HTTP_400_BAD_REQUEST)
 
