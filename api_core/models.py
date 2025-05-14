@@ -6,7 +6,9 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 # Create your models here.
 from django.db.models.signals import post_delete, pre_save
+from django.core.exceptions import ValidationError
 from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
 import logging
 
 logger = logging.getLogger("why_us")
@@ -199,9 +201,7 @@ class WhyChooseUs(Base):
         blank=True, null=True,
         help_text="Optional illustrative image."
     )
-    paragraphs = ArrayField(
-        models.TextField(),
-        blank=False,
+    paragraphs = models.JSONField(
         default=list,
         help_text="List of paragraphs (at least one required)."
     )
@@ -218,45 +218,34 @@ class WhyChooseUs(Base):
     def __str__(self):
         return f"Why Choose Us #{self.order}"
 
+
+    def save(self, *args, **kwargs):
+        if self.id:  # Check if the object already has an ID (i.e., it's not a new object)
+            try:
+                old = WhyChooseUs.objects.get(id=self.id)  # Try to fetch the existing object
+                if old.image and old.image != self.image:  # Check if the image has changed
+                    if os.path.isfile(old.image.path):  # If the old image exists, delete it
+                        os.remove(old.image.path)
+            except ObjectDoesNotExist:
+                pass  # If the object doesn't exist (perhaps it was deleted), do nothing
+
+        # Proceed with saving the object (whether it's a new one or an update)
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
+
+        # Reorder after deletion
+        for idx, item in enumerate(WhyChooseUs.objects.order_by('order')):
+            if item.order != idx:
+                item.order = idx
+                item.save(update_fields=['order'])
     def clean(self):
-        """
-        Validation:
-        - Must include at least one paragraph.
-        """
-        if not self.paragraphs or not isinstance(self.paragraphs, list):
-            raise ValidationError("At least one paragraph is required.")
+        if not isinstance(self.paragraphs, list) or not self.paragraphs:
+            raise ValidationError({"paragraphs": "At least one paragraph is required."})
 
-
-@receiver(pre_save, sender=WhyChooseUs)
-def delete_old_image_on_update(sender, instance, **kwargs):
-    """
-    If the image is changed, delete the old file from disk.
-    """
-    if not instance.pk:
-        return
-    try:
-        old = WhyChooseUs.objects.get(pk=instance.pk)
-        if old.image and old.image != instance.image:
-            if os.path.isfile(old.image.path):
-                os.remove(old.image.path)
-                logger.info(f"Old image deleted: {old.image.path}")
-    except WhyChooseUs.DoesNotExist:
-        pass
-
-
-@receiver(post_delete, sender=WhyChooseUs)
-def delete_image_and_reorder(sender, instance, **kwargs):
-    """
-    Deletes the image file and reorders remaining items to ensure gap-free order.
-    """
-    # Delete image
-    if instance.image and os.path.isfile(instance.image.path):
-        os.remove(instance.image.path)
-        logger.info(f"Image deleted: {instance.image.path}")
-
-    # Reorder remaining
-    items = WhyChooseUs.objects.order_by("order")
-    for index, item in enumerate(items):
-        if item.order != index:
-            item.order = index
-            item.save(update_fields=["order"])
+        for p in self.paragraphs:
+            if not p.strip():
+                raise ValidationError({"paragraphs": "Empty paragraphs are not allowed."})

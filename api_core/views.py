@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from api_core.views_H import *
 
@@ -211,3 +211,38 @@ class PackagesView(APIView):
             package, data=request.data, partial=True)
         package.delete()
         return Response({"detail": f"Package {Package_id}deleted successfully"}, S200)
+
+
+
+class WhyChooseUsListView(APIView):
+    def get(self, request):
+        queryset = WhyChooseUs.objects.all()
+        serializer = WhyChooseUsSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data, S200)
+
+
+class WhyChooseUsImageView(APIView):
+    """
+    Retrieve image of a WhyChooseUs instance by ID or image path.
+    Supports ?id=<uuid> or ?image=<relative_path>
+    """
+    def post(self, request):
+        uuid = request.data.get("id")
+        image_path = request.data.get("image")
+
+        try:
+            if uuid:
+                obj = WhyChooseUs.objects.get(id=uuid)
+                print(f"z\n\n\n{obj}\n\n\n")
+                if obj.image:
+                    return FileResponse(obj.image.open(), content_type='image/jpeg')
+
+            elif image_path:
+                from django.conf import settings
+                abs_path = os.path.join(settings.MEDIA_ROOT, image_path)
+                if os.path.exists(abs_path):
+                    return FileResponse(open(abs_path, 'rb'), content_type='image/jpeg')
+        except WhyChooseUs.DoesNotExist:
+            raise Http404("Object not found")
+
+        return Response({"detail": "Image not found"}, S404)

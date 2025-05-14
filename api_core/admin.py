@@ -35,5 +35,14 @@ class PackagesAdmin(admin.ModelAdmin):
     search_fields = ('mnames', )
 
 
+@admin.register(WhyChooseUs)
+class WhyChooseUsAdmin(admin.ModelAdmin):
+    list_display = ('order', '__str__')
+    ordering = ('order',)
 
-admin.site.register(WhyChooseUs)
+    def delete_model(self, request, obj):
+        obj.delete()  # This triggers the custom delete method in the model
+
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            obj.delete()  # Ensure batch deletes also call the custom method
