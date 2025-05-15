@@ -10,4 +10,9 @@ urlpatterns = [
     path('why-choose-us/', WhyChooseUsListView.as_view(), name='why-choose-us-list'),
     path('why-choose-us/image/', WhyChooseUsImageView.as_view(), name='whychooseus-image'),
     path('users/', UsersView.as_view(), name='user-view'),
+    path('user/register/', UserRegister.as_view(), name='user/register'),
+    path('register/', UserRegister.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('schema/', DynamicSchemaView.as_view(), name='dynamic-schema'),
 ]

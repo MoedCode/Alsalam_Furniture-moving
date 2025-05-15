@@ -7,16 +7,19 @@ paths:
   /about/:
     get:
       operationId: about_retrieve
-      description: |-
-        GET:    Retrieve About + logo URL + list of cover image URLs and captions.
+      description: 'GET:    Retrieve About + logo URL + list of cover image URLs and
+        captions.
+
         POST:   Create (or partial-update) About with logo + any number of cover images.
-        PUT:    Full update of About + logo + cover images (old files cleaned up by model.save()).
-        DELETE: Remove About + all cover images (files cleaned up by model.delete()).
+
+        PUT:    Full update of About + logo + cover images (old files cleaned up by
+        model.save()).
+
+        DELETE: Remove About + all cover images (files cleaned up by model.delete()).'
       tags:
       - about
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -26,9 +29,10 @@ paths:
           description: ''
     post:
       operationId: about_create
-      description: |-
-        Creates or updates the single About instance.
-        If an About exists, it performs a partial update; otherwise, it creates a new one.
+      description: 'Creates or updates the single About instance.
+
+        If an About exists, it performs a partial update; otherwise, it creates a
+        new one.'
       tags:
       - about
       requestBody:
@@ -44,8 +48,7 @@ paths:
               $ref: '#/components/schemas/Packages'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -55,11 +58,15 @@ paths:
           description: ''
     put:
       operationId: about_update
-      description: |-
-        GET:    Retrieve About + logo URL + list of cover image URLs and captions.
+      description: 'GET:    Retrieve About + logo URL + list of cover image URLs and
+        captions.
+
         POST:   Create (or partial-update) About with logo + any number of cover images.
-        PUT:    Full update of About + logo + cover images (old files cleaned up by model.save()).
-        DELETE: Remove About + all cover images (files cleaned up by model.delete()).
+
+        PUT:    Full update of About + logo + cover images (old files cleaned up by
+        model.save()).
+
+        DELETE: Remove About + all cover images (files cleaned up by model.delete()).'
       tags:
       - about
       requestBody:
@@ -75,8 +82,7 @@ paths:
               $ref: '#/components/schemas/Packages'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -86,25 +92,29 @@ paths:
           description: ''
     delete:
       operationId: about_destroy
-      description: |-
-        GET:    Retrieve About + logo URL + list of cover image URLs and captions.
+      description: 'GET:    Retrieve About + logo URL + list of cover image URLs and
+        captions.
+
         POST:   Create (or partial-update) About with logo + any number of cover images.
-        PUT:    Full update of About + logo + cover images (old files cleaned up by model.save()).
-        DELETE: Remove About + all cover images (files cleaned up by model.delete()).
+
+        PUT:    Full update of About + logo + cover images (old files cleaned up by
+        model.save()).
+
+        DELETE: Remove About + all cover images (files cleaned up by model.delete()).'
       tags:
       - about
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
   /about/cover-image/:
     post:
       operationId: about_cover_image_create
-      description: |-
-        Public endpoint to serve About cover images directly by ID or filename.
-        Expects image_id or filename in request.data (POST).
+      description: 'Public endpoint to serve About cover images directly by ID or
+        filename.
+
+        Expects image_id or filename in request.data (POST).'
       tags:
       - about
       requestBody:
@@ -120,8 +130,73 @@ paths:
               $ref: '#/components/schemas/Packages'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+  /login/:
+    post:
+      operationId: login_create
+      tags:
+      - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+  /logo/:
+    get:
+      operationId: logo_retrieve
+      description: 'GET: Return the logo image file from the About section.'
+      tags:
+      - logo
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /logout/:
+    post:
+      operationId: logout_create
+      tags:
+      - logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -135,8 +210,7 @@ paths:
       tags:
       - packages
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -162,8 +236,7 @@ paths:
               $ref: '#/components/schemas/Packages'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -189,8 +262,7 @@ paths:
               $ref: '#/components/schemas/Packages'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -204,12 +276,143 @@ paths:
       tags:
       - packages
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
           description: No response body
+  /register/:
+    post:
+      operationId: register_create
+      tags:
+      - register
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /user/register/:
+    post:
+      operationId: user_register_create
+      tags:
+      - user
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /users/:
+    get:
+      operationId: users_retrieve
+      tags:
+      - users
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    put:
+      operationId: users_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+    delete:
+      operationId: users_destroy
+      tags:
+      - users
+      responses:
+        '204':
+          description: No response body
+  /why-choose-us/:
+    get:
+      operationId: why_choose_us_retrieve
+      tags:
+      - why-choose-us
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
+  /why-choose-us/image/:
+    post:
+      operationId: why_choose_us_image_create
+      description: 'Retrieve image of a WhyChooseUs instance by ID or image path.
+
+        Supports ?id=<uuid> or ?image=<relative_path>'
+      tags:
+      - why-choose-us
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Packages'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Packages'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Packages'
+          description: ''
 components:
   schemas:
     Packages:
@@ -243,10 +446,8 @@ components:
       - name
       - price
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    cookieAuth:
+    tokenAuth:
       type: apiKey
-      in: cookie
-      name: sessionid
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

@@ -250,18 +250,31 @@ class WhyChooseUsImageView(APIView):
             raise Http404("Object not found")
 
         return Response({"detail": "Image not found"}, S404)
+class  UserRegister(APIView):
+    def post(self, request):
+        serializer = UsersSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=S400)
 
+        try:
+            serializer.save()
+        except Exception as e:
+            return Response({"detail": str(e)}, status=S500)
+
+        return Response(serializer.data, status=S201)
 class UsersView(APIView):
     authentication_classes = [CsrfExemptSessionAuthentication]
+    permission_classes = [NoPostPermission]
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def get(self, request):
         if not request.user or not request.user.is_authenticated:
             return Response({"detail": "Not authorized"}, status=S401)
 
         serializer = UsersSerializer(request.user)
         return Response(serializer.data, status=S200)
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def post(self, request):
         serializer = UsersSerializer(data=request.data)
         if not serializer.is_valid():
@@ -274,6 +287,7 @@ class UsersView(APIView):
 
         return Response(serializer.data, status=S201)
 
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def put(self, request):
         if not request.user or not request.user.is_authenticated:
             return Response({"detail": "Not authorized"}, status=S401)
@@ -289,6 +303,7 @@ class UsersView(APIView):
 
         return Response(serializer.data, status=S200)
 
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def delete(self, request):
         if not request.user or not request.user.is_authenticated:
             return Response({"detail": "Not authorized"}, status=S401)
@@ -300,3 +315,19 @@ class UsersView(APIView):
             return Response({"detail": str(e)}, status=S500)
 
 
+class LoginView(APIView):
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return Response({'detail': 'Logged in successfully'})
+        return Response({'detail': 'Invalid credentials'}, S401)
+
+class LogoutView(APIView):
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
+    def post(self, request):
+        logout(request)
+        return Response({'detail': 'Logged out successfully'})
