@@ -1,6 +1,7 @@
 #urls.py
 from django.urls import path
 from .views import *
+from api_core.views_users import *
 urlpatterns = [
     path('about/', AboutView.as_view(), name='about'),
     path('logo/', AboutLogoView.as_view(), name='logo'),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('users/', UsersView.as_view(), name='user-view'),
     path('user/register/', UserRegister.as_view(), name='user/register'),
     path('register/', UserRegister.as_view(), name='register'),
+    path('profile/', ProfileView.as_view(), name='profile'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('schema/', DynamicSchemaView.as_view(), name='dynamic-schema'),

@@ -16,19 +16,7 @@ from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import authenticate, login, logout
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.utils import extend_schema
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        return  # Disable CSRF check
-class NoPostPermission(BasePermission):
-    """
-    Allow GET, PUT, DELETE only if authenticated.
-    Deny POST completely.
-    """
-    def has_permission(self, request, view):
-        if request.method == 'POST':
-            return False  # deny all POST
-        # For others, require authentication
-        return request.user and request.user.is_authenticated
+
 S200 = S.HTTP_200_OK
 S201 = S.HTTP_201_CREATED
 S202 = S.HTTP_202_ACCEPTED
