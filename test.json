@@ -1,0 +1,10 @@
+user = Users.objects.create_superuser(
+    username='Alsalam_admin',
+    email='Alsalam_admin_25@gmail.com',
+    password='peace_25_pwd'
+)
+user = Users.objects.create_superuser(
+    username='test',
+    email='test_25@gmail.com',
+    password='test123'
+)

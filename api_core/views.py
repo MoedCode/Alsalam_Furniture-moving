@@ -114,6 +114,7 @@ class CoverImageServeView(APIView):
     """
     Public endpoint to serve About cover images directly by ID or filename.
     Expects image_id or filename in request.data (POST).
+
     """
     permission_classes = []  # Public access
 
@@ -251,7 +252,6 @@ class WhyChooseUsImageView(APIView):
         return Response({"detail": "Image not found"}, S404)
 
 class UsersView(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     authentication_classes = [CsrfExemptSessionAuthentication]
     def get(self, request):
         if not request.user or not request.user.is_authenticated:
@@ -259,6 +259,7 @@ class UsersView(APIView):
 
         serializer = UsersSerializer(request.user)
         return Response(serializer.data, status=S200)
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request):
         serializer = UsersSerializer(data=request.data)
