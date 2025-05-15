@@ -259,7 +259,8 @@ class UsersView(APIView):
 
         serializer = UsersSerializer(request.user)
         return Response(serializer.data, status=S200)
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
     def post(self, request):
         serializer = UsersSerializer(data=request.data)
