@@ -1,3 +1,5 @@
+#signals.py
+
 import os
 import logging
 from django.db.models.signals import pre_save, post_delete

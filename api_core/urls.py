@@ -1,3 +1,4 @@
+#urls.py
 from django.urls import path
 from .views import *
 urlpatterns = [
@@ -8,4 +9,5 @@ urlpatterns = [
     path('about/cover-image/', CoverImageServeView.as_view(), name='cover_image'),
     path('why-choose-us/', WhyChooseUsListView.as_view(), name='why-choose-us-list'),
     path('why-choose-us/image/', WhyChooseUsImageView.as_view(), name='whychooseus-image'),
+    path('users/', UsersView.as_view(), name='user-view'),
 ]

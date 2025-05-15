@@ -1,3 +1,4 @@
+# views.py
 from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from api_core.views_H import *
@@ -215,6 +216,7 @@ class PackagesView(APIView):
 
 
 class WhyChooseUsListView(APIView):
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def get(self, request):
         queryset = WhyChooseUs.objects.all()
         serializer = WhyChooseUsSerializer(queryset, many=True, context={'request': request})
@@ -226,6 +228,7 @@ class WhyChooseUsImageView(APIView):
     Retrieve image of a WhyChooseUs instance by ID or image path.
     Supports ?id=<uuid> or ?image=<relative_path>
     """
+    @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def post(self, request):
         uuid = request.data.get("id")
         image_path = request.data.get("image")
@@ -246,3 +249,52 @@ class WhyChooseUsImageView(APIView):
             raise Http404("Object not found")
 
         return Response({"detail": "Image not found"}, S404)
+
+class UsersView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [CsrfExemptSessionAuthentication]
+    def get(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({"detail": "Not authorized"}, status=S401)
+
+        serializer = UsersSerializer(request.user)
+        return Response(serializer.data, status=S200)
+
+    def post(self, request):
+        serializer = UsersSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=S400)
+
+        try:
+            serializer.save()
+        except Exception as e:
+            return Response({"detail": str(e)}, status=S500)
+
+        return Response(serializer.data, status=S201)
+
+    def put(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({"detail": "Not authorized"}, status=S401)
+
+        serializer = UsersSerializer(request.user, data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=S400)
+
+        try:
+            serializer.save()
+        except Exception as e:
+            return Response({"detail": str(e)}, status=S500)
+
+        return Response(serializer.data, status=S200)
+
+    def delete(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({"detail": "Not authorized"}, status=S401)
+
+        try:
+            request.user.delete()
+            return Response({"detail": "User deleted"}, status=S204)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=S500)
+
+

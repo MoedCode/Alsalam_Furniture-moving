@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',                  # Django REST framework
      'corsheaders',
      'drf_spectacular',
+     'localflavor',
     # Your app
     'api_core',                        # Your custom app
 ]
@@ -127,6 +128,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'api_core.Users'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -149,7 +151,9 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
-    # YOUR SETTINGS
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
