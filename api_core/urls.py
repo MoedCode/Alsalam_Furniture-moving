@@ -14,6 +14,7 @@ urlpatterns = [
     path('user/register/', UserRegister.as_view(), name='user/register'),
     path('register/', UserRegister.as_view(), name='register'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/image/', ProfileImage.as_view(), name='profile_image'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('schema/', DynamicSchemaView.as_view(), name='dynamic-schema'),

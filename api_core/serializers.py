@@ -120,3 +120,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         if value and '@' not in value:
             raise serializers.ValidationError("Enter a valid email address.")
         return value
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request and request.method == 'POST':
+            user = request.user
+            if Profile.objects.filter(user=user).exists():
+                raise serializers.ValidationError({
+                    "detail": "A profile already exists for this user."
+                })
+        return super().validate(attrs)

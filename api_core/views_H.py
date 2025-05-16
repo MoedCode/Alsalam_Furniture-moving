@@ -16,6 +16,7 @@ from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import authenticate, login, logout
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.utils import extend_schema
+from rest_framework.parsers import MultiPartParser, FormParser
 
 S200 = S.HTTP_200_OK
 S201 = S.HTTP_201_CREATED

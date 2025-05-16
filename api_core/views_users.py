@@ -110,13 +110,16 @@ class ProfileView(APIView):
         status_ = S201 if created else S200
         serialized_prof = ProfileSerializer(profile)
         return Response(serialized_prof.data, status_)
-
     @extend_schema(request=ProfileSerializer, responses=ProfileSerializer)
     def post(self, request):
         if not request.user or not request.user.is_authenticated:
             return Response({"detail": "Not authorized"}, status=S401)
 
-        serializer = ProfileSerializer(data=request.data, context={'request': request})
+        data = request.data.copy()
+        if 'image' in request.FILES:
+            data['image'] = request.FILES['image']
+
+        serializer = ProfileSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=S201)
@@ -132,7 +135,11 @@ class ProfileView(APIView):
         except Profile.DoesNotExist:
             return Response({"detail": "Profile not found."}, status=S404)
 
-        serializer = ProfileSerializer(profile, data=request.data, partial=True, context={'request': request})
+        data = request.data.copy()
+        if 'image' in request.FILES:
+            data['image'] = request.FILES['image']
+
+        serializer = ProfileSerializer(profile, data=data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=S200)
@@ -149,3 +156,23 @@ class ProfileView(APIView):
 
         profile.delete()
         return Response(status=S204)
+class ProfileImage(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
+
+    def get(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({"detail": "Not authorized"}, status=S401)
+
+        profile = Profile.objects.filter(user=request.user).first()
+        if not profile:
+            return Response({"detail": "User has no profile"}, status=S404)
+
+        if not profile.image:
+            return Response({"detail": "Profile has no image"}, status=S404)
+
+        # Ensure the file exists on disk
+        image_path = profile.image.path
+        if not os.path.exists(image_path):
+            return Response({"detail": "Image file not found on disk"}, status=S404)
+
+        return FileResponse(open(image_path, 'rb'), content_type='image/jpeg')
