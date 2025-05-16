@@ -1,6 +1,5 @@
 #views_H.py
 from .serializers import *
-from .models import *
 import os
 import logging
 from django.core.files.storage import default_storage
@@ -17,6 +16,12 @@ from django.contrib.auth import authenticate, login, logout
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.utils import extend_schema
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
+
+from api_core.models import (
+    About, WhyChooseUs,  Packages, AboutCoverImage,
+    Users, Profile
+    )
 
 S200 = S.HTTP_200_OK
 S201 = S.HTTP_201_CREATED

@@ -1,10 +1,15 @@
 #admin.py
 
 from django.contrib import admin
-from api_core.models import *
+
 # Register your models here.
 # admin.site.register(About)
 # admin.site.register(Packages)
+
+from api_core.models import (
+    About, WhyChooseUs,  Packages, AboutCoverImage,
+    Users, Profile
+    )
 
 
 class AboutCoverImageInline(admin.TabularInline):

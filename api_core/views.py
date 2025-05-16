@@ -168,13 +168,16 @@ class AboutFrom(APIView):
 
 
 class PackagesView(APIView):
+    authentication_classes = [SessionAuthentication]
+    parser_classes = [MultiPartParser, FormParser]
+
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def get(self, request):
         packages = Packages.objects.all()
         if not packages:
             return Response({"detail": "About Packages Created yet"}, S404)
         serialized_packages = PackagesSerializer(packages, many=True).data
-        return Response({serialized_packages, S200})
+        return Response({"data": serialized_packages}, status=S200)
 
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def post(self, request):

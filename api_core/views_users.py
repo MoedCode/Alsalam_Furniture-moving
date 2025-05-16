@@ -28,7 +28,8 @@ class  UserRegister(APIView):
         return Response(serializer.data, status=S201)
 class UsersView(APIView):
     authentication_classes = [CsrfExemptSessionAuthentication]
-    permission_classes = [NoPostPermission]
+    # permission_classes = [NoPostPermission]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     @extend_schema(request=PackagesSerializer, responses=PackagesSerializer)
     def get(self, request):
         if not request.user or not request.user.is_authenticated:
@@ -176,3 +177,4 @@ class ProfileImage(APIView):
             return Response({"detail": "Image file not found on disk"}, status=S404)
 
         return FileResponse(open(image_path, 'rb'), content_type='image/jpeg')
+

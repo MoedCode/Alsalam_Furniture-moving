@@ -1,8 +1,13 @@
 #serializers.py
 
 from rest_framework import serializers
-from api_core.models import *
 from django.contrib.auth.hashers import make_password
+
+from api_core.models import (
+    About, WhyChooseUs,  Packages, AboutCoverImage,
+    Users, Profile,
+    validate_phone, validate_postal_city
+    )
 
 class AboutSerializer(serializers.ModelSerializer):
     class Meta:
